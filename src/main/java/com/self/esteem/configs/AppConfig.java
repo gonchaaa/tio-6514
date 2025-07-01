@@ -1,4 +1,4 @@
-package com.self.esteem.config;
+package com.self.esteem.configs;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

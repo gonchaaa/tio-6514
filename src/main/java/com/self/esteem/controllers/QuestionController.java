@@ -1,4 +1,4 @@
-package com.self.esteem.controller;
+package com.self.esteem.controllers;
 
 import com.self.esteem.DTOs.QuestionDTO;
 import com.self.esteem.services.QuestionService;

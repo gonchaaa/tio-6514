@@ -11,7 +11,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtTokenUtil {
-    @Value("${securty.jwt.secret}")
+    @Value("${security.jwt.secret}")
     private String SECRET_KEY;
 
    private Key getKey() {
@@ -19,13 +19,12 @@ public class JwtTokenUtil {
        return Keys.hmacShaKeyFor(keyBytes);
    }
 
-    public Long extractUserEmail(String authHeader) {
-        String token = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
 
+    public Long extractUserId(String authHeader) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getKey())
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(extractUserToken(authHeader))
                 .getBody();
 
         Object userIdObj = claims.get("userId");
@@ -33,7 +32,6 @@ public class JwtTokenUtil {
         if (userIdObj == null) {
            throw new RuntimeException("Token-də userId tapılmadı.");
         }
-
         if (userIdObj instanceof Integer) {
             return ((Integer) userIdObj).longValue();
         } else if (userIdObj instanceof Long) {
@@ -43,6 +41,22 @@ public class JwtTokenUtil {
         } else {
           throw new RuntimeException("Token-də userId tipi tanınmadı.");
        }
+    }
+    public String extractUserEmail(String authHeader) {
+
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(extractUserToken(authHeader))
+                .getBody();
+        System.out.println(claims.getSubject());
+        System.out.println(claims.get("sub"));
+        return claims.getSubject();
+    }
+
+    public String extractUserToken(String authHeader) {
+        return authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
     }
 
 }
